@@ -62,8 +62,15 @@ class Scanner:
             case ">": self.add_token(TokenType.GREATER_EQUAL if self.match("=") else TokenType.GREATER),
             case "/":
                 if self.match("/"):
-                    while self.current < len(self.source) - 1 and self.source[self.current + 1] == "\n":
+                    while self.current < len(self.source) - 1 and self.source[self.current + 1] != "\n":
                         self.current += 1
+                elif self.match("*"):
+                    while self.current < len(self.source) - 2 and self.source[self.current + 1: self.current + 3] != "*/":
+                        self.current += 1
+                        if self.source[self.current] == "\n":
+                            self.line += 1
+                    if self.current >= len(self.source) - 2:
+                        raise ValueError("Multiline comment not closed correctly")
                 else:
                     self.add_token(TokenType.SLASH)
             case " " | "\r" | "\t":
