@@ -43,6 +43,8 @@ class Scanner:
         return self.tokens
 
     def scan_token(self):
+        self.start = self.current
+
         match self.source[self.start]:
             case "(": self.add_token(TokenType.LEFT_PAREN)
             case ")": self.add_token(TokenType.RIGHT_PAREN)
@@ -75,6 +77,8 @@ class Scanner:
                     self.identifier()
                 else:
                     raise ValueError("Unexpected character")
+
+        self.current += 1
 
     def add_token(self, token_type: TokenType, literal: Any = None):
         self.tokens.append(Token(token_type, self.source[self.start:self.current + 1], literal, self.line))
